@@ -21,8 +21,8 @@ class CityPairsTable extends Migration
         Schema::create('city_pairs', function (Blueprint $table) {
             $table->increments('id');
             $table->decimal('AWARD_YEAR',38,0);
-            $table->string('ORIGIN_AIRPORT_ABBREV',3);
-            $table->string('DESTINATION_AIRPORT_ABBREV',3);
+            $table->string('FROM',3);
+            $table->string('TO',3);
             $table->string('ORIGIN_CITY_NAME',21);
             $table->string('ORIGIN_STATE',2);
             $table->string('ORIGIN_COUNTRY',4);

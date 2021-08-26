@@ -8,7 +8,7 @@ class WaterfallTable extends Migration
 {
     public function up()
     {
-        Schema::create('waterfall', function (Blueprint $table) {
+        Schema::create('facilities', function (Blueprint $table) {
 
             $table->increments('id');
             $table->string('service_area',7);
@@ -44,6 +44,6 @@ class WaterfallTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('waterfall');
+        Schema::dropIfExists('facilities');
     }
 }

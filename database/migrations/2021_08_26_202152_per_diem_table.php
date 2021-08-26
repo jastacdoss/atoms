@@ -8,13 +8,13 @@ class PerDiemTable extends Migration
 {
     public function up()
     {
-        Schema::create('perdiem', function (Blueprint $table) {
+        Schema::create('perdiems', function (Blueprint $table) {
             $table->increments('id',);
             $table->decimal('destination_id',38,0);
             $table->string('name',44);
             $table->string('location',191);
             $table->string('state',2);
-            $table->decimal('zip',38,0);
+            $table->string('zip',10);
             $table->year('fiscal');
             $table->decimal('oct',38,0);
             $table->decimal('nov',38,0);
@@ -34,6 +34,6 @@ class PerDiemTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('perdiem');
+        Schema::dropIfExists('perdiems');
     }
 }

@@ -8,7 +8,7 @@ class FacilityAddress extends Migration
 {
     public function up()
     {
-        Schema::create('address', function (Blueprint $table) {
+        Schema::create('addresses', function (Blueprint $table) {
             $table->increments('id');
             $table->string('facility_id',7);
             $table->string('address');
@@ -22,6 +22,6 @@ class FacilityAddress extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('address');
+        Schema::dropIfExists('addresses');
     }
 }
