@@ -15,7 +15,7 @@ class FacilityAddress extends Migration
             $table->string('address2');
             $table->string('city',20);
             $table->string('state',3);
-            $table->string('zip',10);
+            $table->string('zip', 10);
             $table->string('phone',14);
         });
     }

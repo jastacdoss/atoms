@@ -38,6 +38,7 @@ class WaterfallTable extends Migration
             $table->string('training_team',6);
             $table->date('training_start_date');
             $table->date('go_live_date');
+            $table->tinyInteger('sibling_status')->default(0); // 0 - NO, 1 - RADIUS, 2 - DISTANCE
 
         });
     }

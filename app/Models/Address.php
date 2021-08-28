@@ -14,4 +14,9 @@ class Address extends Model
     {
         return $this->belongsTo(Facility::class, 'facility_id', 'facility_id');
     }
+
+    public function getFormattedAddressAttribute()
+    {
+        return $this->address . ', ' . $this->zip;//$this->city . ', ' . $this->state .
+    }
 }

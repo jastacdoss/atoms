@@ -14,6 +14,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         'App\Console\Commands\FormatData',
+        'App\Console\Commands\FacilitiesInRange',
+        'App\Console\Commands\FacilityDistance',
     ];
 
     /**
@@ -25,6 +27,9 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
+        $schedule->command('atoms:range')->hourly()->emailOutputTo('jason@dossweb.com');
+        $schedule->command('atoms:range --demo')->hourly()->emailOutputTo('jason@dossweb.com');
+        $schedule->command('atoms:distance')->hourlyAt(5)->emailOutputTo('jason@dossweb.com');
     }
 
     /**
