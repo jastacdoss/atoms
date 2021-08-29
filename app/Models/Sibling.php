@@ -27,4 +27,11 @@ class Sibling extends Model
     {
         return $this->belongsTo(Facility::class, 'sibling_id', 'id');
     }
+
+    /** Return distance in miles */
+    public function getActualDistanceAttribute($value)
+    {
+        // Convert meters to miles
+        return $value * config('atoms.METERS_TO_MILES');
+    }
 }

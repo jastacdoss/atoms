@@ -35,7 +35,8 @@ class WaterfallTable extends Migration
             $table->date('key_site_start')->nullable();
             $table->decimal('deployment_priority',38,0);
             $table->date('training_date');
-            $table->string('training_team',6);
+            $table->string('training_facility');
+            $table->unsignedInteger('team_id');
             $table->date('training_start_date');
             $table->date('go_live_date');
             $table->tinyInteger('sibling_status')->default(0); // 0 - NO, 1 - RADIUS, 2 - DISTANCE

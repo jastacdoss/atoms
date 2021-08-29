@@ -3,9 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Models\Facility;
-use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
+use App\Libraries\DistanceMatrixAPI;
 
 /**
  * Find distances between facilities
@@ -30,6 +30,8 @@ class FacilityDistance extends Command
      */
     protected $description = 'Find distances between facilities';
 
+    protected $distance;
+
     /**
      * Create a new command instance.
      *
@@ -38,10 +40,13 @@ class FacilityDistance extends Command
     public function __construct()
     {
         parent::__construct();
+
+        // Set up the API
+        $this->distance = new DistanceMatrixAPI();
     }
 
     private $uri = 'https://maps.googleapis.com/maps/api/distancematrix/json';
-    private $api_key = 'AIzaSyBDgxkJkF3_OdM19Ve86TwbIeZ7XFsX5Gc';
+    private $api_key;
 
     /**
      * Execute the console command.
@@ -50,6 +55,9 @@ class FacilityDistance extends Command
      */
     public function handle()
     {
+        // GET API Key
+        $this->api_key = env('GOOGLE_API_KEY');
+
         // Retrieve all facilities with siblings
         $facilities = Facility::where('sibling_status', 1)
             ->with(['address', 'siblings.sibling.address'])
@@ -58,14 +66,6 @@ class FacilityDistance extends Command
 
         // Loop through each facility to find out distance
         foreach ($facilities as $facility) {
-            // Get sibling addresses into url format
-            $siblings = $facility->siblings;
-            $destinations = $siblings->pluck('sibling.address.formatted_address')
-                ->map(function ($a) {
-                    return urlencode($a);
-                })
-                ->join('|');
-
             // No siblings
             if ($facility->siblings->count() === 1 && !$facility->siblings[0]->sibling_id) {
                 Log::info($facility->facility_id . ' has no siblings.');
@@ -88,27 +88,18 @@ class FacilityDistance extends Command
                 continue;
             }
 
-            // Fetch the distance matrix
-            $c = new Client(['base_uri' => "{$this->uri}"]);
-            $r = $c->request('GET', '', [
-                'query' => [
-                    'origins' => $facility->address->formatted_address,
-                    'destinations' => $destinations,
-                    'units' => 'imperial',
-                    'key' => $this->api_key,
-                ]
-            ]);
-            $result = json_decode($r->getBody());
+            // Get sibling addresses into url format
+            $destinations = $facility->siblings->pluck('sibling.address.formatted_address');
 
-            // Make sure request is valid
-            if (!isset($result->rows[0])) {
+            // Fetch the distance matrix
+            if (!$this->distance->fetch($facility->address->formatted_address, $destinations)) {
                 Log::info($facility->facility_id . ' - DEST: ' . $destinations . ' /n/r :: Request has no rows.');
                 continue;
             }
-            $data = collect($result->rows[0]->elements);//$result['rows'][0]->elements;
+            $data = $this->distance->distances();
 
             // Update sibling records
-            foreach ($siblings as $idx => $sibling) {
+            foreach ($facility->siblings as $idx => $sibling) {
                 // Handle errors
                 if (!isset($data[$idx]->distance) || !isset($data[$idx]->duration)) {
                     Log::info($facility->facility_id . '- SIBLING: ' . $sibling->id . ' :: No distance/duration.');

@@ -36,12 +36,12 @@ class FacilitiesInRange extends Command
      * Distance to retrieve facilities within
      * @var string $radius
      */
-    protected $radius = '100'; // In Miles
+    protected $radius; // In Miles
 
     protected $api_url = 'https://www.zipcodeapi.com/rest';
     protected $api_file = 'radius.json';
     protected $api_demo_key = 'DemoOnly00GSber6CujmDEpwRTX9XLOXTLA8DJmP4WZ3JkqO5Yzb0XrCecwol78Z';
-    protected $api_key = 'jlzxX0gVNpNz8YMXXYVskuywKBqggZi4MgfUaJk34CjHr3bK4Pn3Q5b8oUaZFiem';
+    protected $api_key;
 
     /**
      * Create a new command instance.
@@ -51,6 +51,12 @@ class FacilitiesInRange extends Command
     public function __construct()
     {
         parent::__construct();
+
+        // Get API Key
+        $this->api_key = env('ZIPCODE_API_KEY');
+
+        // Get distance
+        $this->radius = config('atoms.DRIVEABLE_DISTANCE') * 2;
     }
 
     /**
