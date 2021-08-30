@@ -5,6 +5,28 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\Sibling
+ *
+ * @property int $id
+ * @property int $facility_id
+ * @property int|null $sibling_id
+ * @property mixed|null $zip_distance
+ * @property mixed|null $actual_distance
+ * @property int|null $travel_time
+ * @property-read \App\Models\Facility $parent
+ * @property-read \App\Models\Facility|null $sibling
+ * @method static \Illuminate\Database\Eloquent\Builder|Sibling newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Sibling newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Sibling query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Sibling whereActualDistance($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sibling whereFacilityId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sibling whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sibling whereSiblingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sibling whereTravelTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sibling whereZipDistance($value)
+ * @mixin \Eloquent
+ */
 class Sibling extends Model
 {
     use HasFactory;

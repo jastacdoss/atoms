@@ -100,7 +100,7 @@ class TravelMethod
             // See if travelling to local airport
             if ($pair) {
                 // Pair found
-                return $this->set_method($pair['pair']->{config('atoms.PAIR_FARE')}, 'air', FALSE, $pair);
+                return $this->set_method($pair['pair']->{config('atoms.PAIR_FARE')} * 2, 'air', FALSE, $pair);
             }
 
             // See if POV is an option

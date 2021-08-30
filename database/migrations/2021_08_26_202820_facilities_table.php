@@ -17,9 +17,9 @@ class WaterfallTable extends Migration
             $table->decimal('level',38,0);
             $table->string('facility_id',3);
             $table->string('facility_name',31);
-            $table->integer('areas-opereational');
-            $table->integer('areas-tmu');
-            $table->string('enroute-terminal',2);
+            $table->integer('areas_operational');
+            $table->integer('areas_tmu');
+            $table->string('enroute_terminal',2);
             $table->string('hr_region',2);
             $table->boolean('core_airport');
             $table->string('piv_readers',5);

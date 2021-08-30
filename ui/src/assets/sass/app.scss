@@ -1,0 +1,96 @@
+@import '_variables.scss';
+
+// Import Bootstrap and BootstrapVue source SCSS files
+@import '~bootstrap/scss/bootstrap.scss';
+@import '~bootstrap-vue/src/index.scss';
+
+/** BASE */
+p {
+    word-break: break-word;
+}
+
+.strikethrough {
+    text-decoration: line-through;
+}
+
+/** CRUD RESULTS STYLE */
+.results {
+    //@media(max-width: 768px) {
+    //    &.table {
+    //        font-size: 0.6em;
+    //    }
+    //}
+
+    &.table, &.table-responsive {
+        width: 100%;
+        margin: auto;
+        padding: 0;
+        border-collapse: collapse;
+        table-layout: fixed;
+
+        thead {
+            background-color: $primary-3;
+            color: $white-color;
+            font-weight: bold;
+
+            a, a:hover, a:active, a:visited {
+                color: $white-color;
+            }
+        }
+
+        td, th {
+            padding: 0.3em;
+            font-size: 0.8em;
+            border: thin solid $gray-4;
+        }
+
+        th {
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+    }
+
+    .head {
+        background-color: $primary-4;
+        color: $white-color;
+        font-weight: bold;
+    }
+
+    .subhead {
+        background-color: $primary-1;
+        color: $white-color;
+        font-weight: bold;
+    }
+
+    .subhead-light {
+        background-color: $light-gray;
+        color: $primary-4;
+        font-weight: bold;
+    }
+
+    .deleted {
+        background-color: $opacity-gray-8;
+        color: $gray-1;
+    }
+}
+
+/* MISCELLANEOUS MODIFIERS */
+.bg-lightgray {
+    background-color: lightgray;
+}
+
+.bg-lightblue {
+    background-color: $danger-0;
+}
+
+.cursor-default {
+    cursor: default;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.cursor-help {
+    cursor: help;
+}

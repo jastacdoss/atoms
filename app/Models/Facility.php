@@ -3,12 +3,93 @@
 namespace App\Models;
 
 use App\Libraries\DistanceMatrixAPI;
+use App\Traits\FacilityTrainingTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\Facility
+ *
+ * @property int $id
+ * @property string $service_area
+ * @property string $district
+ * @property string $facility_type
+ * @property string $level
+ * @property string $facility_id
+ * @property string $airport_id
+ * @property string $facility_name
+ * @property int $areas_operational
+ * @property int $areas_tmu
+ * @property string $enroute_terminal
+ * @property string $hr_region
+ * @property int $core_airport
+ * @property string $piv_readers
+ * @property string $bues
+ * @property int $has_wmt
+ * @property int $has_preflex
+ * @property int $has_postflex
+ * @property int $has_siso
+ * @property int $has_opq
+ * @property int $release
+ * @property int $release_adjusted
+ * @property string $key_site
+ * @property string|null $key_site_start
+ * @property string $deployment_priority
+ * @property string $training_date
+ * @property int|null $team_id
+ * @property string $training_start_date
+ * @property string|null $training_facility
+ * @property string $go_live_date
+ * @property int|null $sibling_status
+ * @property-read \App\Models\Address|null $address
+ * @property-read mixed $areas
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CityPair[] $pairs_fly_from
+ * @property-read int|null $pairs_fly_from_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CityPair[] $pairs_fly_to
+ * @property-read int|null $pairs_fly_to_count
+ * @property-read \App\Models\Perdiem|null $perdiem
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sibling[] $siblings
+ * @property-read int|null $siblings_count
+ * @property-read \App\Models\Team|null $team
+ * @method static \Illuminate\Database\Eloquent\Builder|Facility newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Facility newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Facility query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Facility whereAirportId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Facility whereAreasOperational($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Facility whereAreasTmu($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Facility whereBues($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Facility whereCoreAirport($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Facility whereDeploymentPriority($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Facility whereDistrict($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Facility whereEnrouteTerminal($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Facility whereFacilityId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Facility whereFacilityName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Facility whereFacilityType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Facility whereGoLiveDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Facility whereHasOpq($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Facility whereHasPostflex($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Facility whereHasPreflex($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Facility whereHasSiso($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Facility whereHasWmt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Facility whereHrRegion($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Facility whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Facility whereKeySite($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Facility whereKeySiteStart($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Facility whereLevel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Facility wherePivReaders($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Facility whereRelease($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Facility whereReleaseAdjusted($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Facility whereServiceArea($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Facility whereSiblingStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Facility whereTeamId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Facility whereTrainingDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Facility whereTrainingFacility($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Facility whereTrainingStartDate($value)
+ * @mixin \Eloquent
+ */
 class Facility extends Model
 {
-    use HasFactory;
+    use HasFactory, FacilityTrainingTrait;
     public $fillable = ['sibling_status'];
     public $timestamps = FALSE;
 
@@ -42,44 +123,21 @@ class Facility extends Model
         return $this->belongsTo(Team::class);
     }
 
-    public function travel_to_cost($from)
-    {
-        // Try to find the city pair
-        $pair = $this->pair_fly_to()->where('FROM', $from)->first();
-        if ($pair) {
-            return $pair->{config('atoms.PAIR_FARE')};
-        } else {
-            // See if there is already a sibling
-            $sibling = $this->siblings()
-                ->whereHas('sibling', fn ($q) => $q->where('facility_id', $from))
-                ->first();
-
-            // No sibling so create one
-            if (!isset($sibling->sibling) || !$sibling->sibling) {
-                // Find the FROM facility
-                $f = Facility::where('facility_id', $from)->with('address')->first();
-
-                // Fetch driving distance
-                $distance = new DistanceMatrixAPI();
-                $distance->fetch($this->address->formatted_address, $f->address->formatted_address);
-
-                // Create a sibling
-                $sibling = new Sibling();
-                $sibling->sibling_id = $f->id;
-                $sibling->actual_distance = $distance->distances()[0]->distance->value;
-                $sibling->travel_time = $distance->distances()[0]->duration->value;
-                $this->siblings()->save($sibling);
-            }
-
-            // Sibling is there so calculate driving cost
-            return number_format($sibling->actual_distance * config('atoms.MILEAGE_RATE'), 2);
-        }
-    }
-
     /** Has many siblings */
     public function siblings()
     {
         return $this->hasMany(Sibling::class, 'facility_id', 'id');
+    }
 
+    /** Training is at a facility */
+    public function training()
+    {
+        return $this->hasOne(Facility::class, 'facility_id', 'training_facility');
+    }
+
+    /** Get number of areas */
+    public function getAreasAttribute()
+    {
+        return $this->areas_operational + $this->areas_tmu;
     }
 }
