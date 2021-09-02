@@ -9,8 +9,9 @@
                 <td class="col-1">Release</td>
                 <td class="col-1">Team</td>
                 <td class="col-2">Start Train</td>
-                <td class="col-2">Train Fac.</td>
-                <td class="col-2">Go Live</td>
+                <td class="col-1">Train Fac.</td>
+                <td class="col-1">Go Live</td>
+                <td class="col-1">Cost</td>
             </tr>
             </thead>
             <tbody>
@@ -23,6 +24,7 @@
                 <td>{{ facility.training_date }}</td>
                 <td>{{ facility.training_facility | uppercase }}</td>
                 <td>{{ facility.go_live_date }}</td>
+                <td>${{ cost(facility) }}</td>
             </tr>
             </tbody>
         </table>
@@ -41,8 +43,14 @@ export default {
             facilities: [],
         }
     },
-    methods: {},
-    computed: {},
+    methods: {
+        cost(facility) {
+            return _.sumBy(facility.travellers, 'cost.cost');
+        }
+    },
+    computed: {
+
+    },
     created() {
         FacilityRepository.get()
         .then(r => {

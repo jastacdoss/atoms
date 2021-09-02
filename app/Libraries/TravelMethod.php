@@ -76,7 +76,7 @@ class TravelMethod
      */
     public function set_method($cost, $method, $estimate = FALSE, $pair = FALSE)
     {
-        $this->result['cost'] = $cost;
+        $this->result['cost'] = (float)$cost;
         $this->result['method'] = $method;
         $this->result['estimate'] = $estimate;
         $this->result['pair'] = $pair;

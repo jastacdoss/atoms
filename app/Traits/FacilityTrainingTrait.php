@@ -11,6 +11,11 @@ trait FacilityTrainingTrait {
         // Set up training collection
         $travellers = new Collection();
 
+        if (!$this->team) {
+            $this->travellers = null;
+            return $this;
+        }
+
         // See if trainers are on-site or trainees are travelling
         if ($this->facility_id === $this->training_facility) {
             /** Trainers travelling to facility */
@@ -21,9 +26,11 @@ trait FacilityTrainingTrait {
             $d = new TravelMethod();
             foreach($trainers as $trainer) {
                 $travellers->push([
-                    'who' => 'trainers',
+                    'who' => 'trainer',
                     'cost' => $d->to($this)->from($trainer->facility)->calculate(),
                     'how_many' => 1,
+                    'from' => $trainer->facility->facility_id,
+                    'to' => $this->facility_id,
                 ]);
             }
         } else {
@@ -33,8 +40,11 @@ trait FacilityTrainingTrait {
                 'who' => 'trainees',
                 'cost' => $d->to($this->training)->from($this)->calculate(),
                 'how_many' => $this->areas * 2 + ( $this->areas > 1 ? 2 : 0 ),
+                'from' => $this->facility_id,
+                'to' => $this->training_facility,
             ]);
         }
-        return $travellers;
+        $this->travellers = $travellers;
+        return $this;
     }
 }

@@ -4,6 +4,8 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import '../assets/sass/app.scss';
 
+window._ = require('lodash'); // lodash
+
 const Dependencies = {
     install(Vue) {
         Vue.use(GlobalFilters);
