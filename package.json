@@ -16,5 +16,6 @@
         "postcss": "^8.1.14"
     },
     "dependencies": {
+        "vue-moment": "^4.1.0"
     }
 }

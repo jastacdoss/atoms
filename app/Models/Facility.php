@@ -90,8 +90,10 @@ use Illuminate\Database\Eloquent\Model;
 class Facility extends Model
 {
     use HasFactory, FacilityTrainingTrait;
-    public $fillable = ['sibling_status'];
+    public $fillable = ['sibling_status', 'training_facility'];
     public $timestamps = FALSE;
+    public $dates = ['training_date', 'training_start_date', 'go_live_date'];
+    public $appends = ['areas'];
 
     /** Has a single address */
     public function address()

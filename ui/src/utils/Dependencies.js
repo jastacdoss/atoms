@@ -11,6 +11,7 @@ const Dependencies = {
         Vue.use(GlobalFilters);
         Vue.use(BootstrapVue);
         Vue.use(IconsPlugin);
+        Vue.use(require('vue-moment'));
     }
 };
 

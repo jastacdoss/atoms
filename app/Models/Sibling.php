@@ -37,6 +37,7 @@ class Sibling extends Model
         'zip_distance' => 'decimal:5',
         'actual_distance' => 'decimal:5',
     ];
+    protected $appends = ['distance_miles', 'travel_time_minutes'];
 
     /** Has a parent facility */
     public function parent()
@@ -51,9 +52,15 @@ class Sibling extends Model
     }
 
     /** Return distance in miles */
-    public function getActualDistanceAttribute($value)
+    public function getDistanceMilesAttribute()
     {
         // Convert meters to miles
-        return $value * config('atoms.METERS_TO_MILES');
+        return round($this->actual_distance * config('atoms.METERS_TO_MILES'));
+    }
+
+    /** Return travel time in hours */
+    public function getTravelTimeMinutesAttribute()
+    {
+        return round($this->travel_time / 60);
     }
 }

@@ -74,12 +74,13 @@ class TravelMethod
      * @param false $pair
      * @return array
      */
-    public function set_method($cost, $method, $estimate = FALSE, $pair = FALSE)
+    public function set_method($cost, $method, $distance, $estimate = FALSE, $pair = FALSE)
     {
         $this->result['cost'] = (float)$cost;
         $this->result['method'] = $method;
         $this->result['estimate'] = $estimate;
         $this->result['pair'] = $pair;
+        $this->result['distance'] = $distance;
 
         return $this->result;
     }
@@ -92,7 +93,7 @@ class TravelMethod
     public function calculate()
     {
         return Cache::tags('travel-method')
-            ->remember($this->from->facility_id . '-' . $this->to->facility_id, 3600, function () {
+            ->rememberForever($this->from->facility_id . '-' . $this->to->facility_id, function () {
 
             // Look for city pair
             $pair = $this->find_city_pair($this->from, $this->to);
@@ -100,7 +101,7 @@ class TravelMethod
             // See if travelling to local airport
             if ($pair) {
                 // Pair found
-                return $this->set_method($pair['pair']->{config('atoms.PAIR_FARE')} * 2, 'air', FALSE, $pair);
+                return $this->set_method($pair['pair']->{config('atoms.PAIR_FARE')} * 2, 'air', NULL, FALSE, $pair);
             }
 
             // See if POV is an option
@@ -110,11 +111,11 @@ class TravelMethod
                 ->first();
             if ($pov) {
                 // They can just drive
-                return $this->set_method($this->pov_mileage($pov), 'pov');
+                return $this->set_method($this->pov_mileage($pov), 'pov', $pov->actual_distance);
             }
 
             // No other option so just estimate
-            return $this->set_method(config('atoms.DEFAULT_AIRFARE'), 'air', TRUE);
+            return $this->set_method(config('atoms.DEFAULT_AIRFARE'), 'air', NULL, TRUE);
         });
     }
 

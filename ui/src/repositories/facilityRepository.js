@@ -38,9 +38,9 @@ export default {
         return response;
       });
   },
-  update(area_id, data) {
+  update(facility_id, data) {
     store.commit('request', `${model}/update`);
-    return Axios.put(`${getResource()}/${area_id}`, data)
+    return Axios.put(`${getResource()}/${facility_id}`, data)
       .then((resp) => {
         store.commit('alerts/newMessage', { type: 'success', message: `${data.name} updated successfully.` }, { root: true });
         return resp;
@@ -86,4 +86,19 @@ export default {
         return response;
       });
   },
+    siblings(facility_id) {
+        store.commit('request', `${model}/siblings`);
+        return Axios.get(`${getResource()}/${facility_id}/siblings`)
+            .then((resp) => {
+                return resp;
+            })
+            .catch((e) => {
+                store.commit('alerts/newMessage', { type: 'error', message: e.response.data }, { root: true });
+                throw e.response.data;
+            })
+            .finally((response) => {
+                store.commit('request', `${model}/siblings`);
+                return response;
+            });
+    },
 };

@@ -12,6 +12,13 @@ return [
     // RENTAL CAR
     'RENTAL_RATE' => '58.99', // https://www.gsa.gov/cdnstatic/General_Supplies__Services/STR%20Rate%20FY21%20Q3%20Vehicle%20Rates.pdf
 
+    // DEFAULT M&IE
+    'DEFAULT_LODGING_RATE' => '100',
+    'DEFAULT_MEALS_RATE' => '55',
+
+    // TRAINING LENGTH
+    'TRAINING_DAYS' => 5, // Number of days for training, including travel days, for calculating per-diem (initially)
+
     // MISC
     'METERS_TO_MILES' => '.000621371',
 ];

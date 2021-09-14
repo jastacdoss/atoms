@@ -18,7 +18,7 @@ use App\Http\Controllers\FacilityController;
 //Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //    return $request->user();
 //});
-
+Route::get('facilities/{facility}/siblings', [FacilityController::class, 'siblings']);//
 Route::apiResource('facilities', FacilityController::class, array("as" => "api"));//
 
 require __DIR__ . '/auth.php';

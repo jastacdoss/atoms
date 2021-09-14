@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\FormatData',
         'App\Console\Commands\FacilitiesInRange',
         'App\Console\Commands\FacilityDistance',
+        'App\Console\Commands\CalculateTravelMethods',
     ];
 
     /**
