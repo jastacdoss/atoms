@@ -32,7 +32,7 @@ trait FacilityTrainingTrait {
                     $travel = $lodging = $meals = 0;
                 } else {
                     $travel = $d->to($this)->from($trainer->facility)->calculate();
-                    $lodging = $this->lodging($travel, $this->perdiem);
+                    $lodging = $this->lodging($travel, $this->perdiem) * (config('atoms.TRAINING_DAYS') - 1);
                     $meals = $this->meals($travel, $this->perdiem);
                 }
 
@@ -57,7 +57,7 @@ trait FacilityTrainingTrait {
                 $travel = $lodging = $meals = 0;
             } else {
                 $travel = $d->to($this->training)->from($this)->calculate();
-                $lodging = $this->lodging($travel, $this->training->perdiem);
+                $lodging = $this->lodging($travel, $this->training->perdiem) * (config('atoms.TRAINING_DAYS') - 1);
                 $meals = $this->meals($travel, $this->training->perdiem);
             }
 
@@ -85,7 +85,7 @@ trait FacilityTrainingTrait {
             return 0;
 
         // Get month id
-        $month = strtolower($this->training_date->format('M'));
+        $month = strtolower($this->training_start_date->format('M'));
 
         // Get lodging rate for the perdiem month
         return isset($perdiem->{ $month }) ? (int)$this->perdiem->{ $month } : config('atoms.DEFAULT_LODGING_RATE');
